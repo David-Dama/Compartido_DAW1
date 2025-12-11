@@ -172,6 +172,7 @@ public class PowerMind {
         }
         System.out.println("¡Has perdido! Número máximo de intentos superado.");
         resultado[3] += 1;
+        resultado[2] += 5;
         return;
     }
 
