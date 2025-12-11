@@ -19,21 +19,23 @@ public class PowerMind {
     }
 
     public static void main(String[] args){
-        int opcion, numPartida = 1, resultado;
+        int opcion, numPartida = 1;
         int[] stats = new int[5];
 
         // Bucle principal
         do {
             System.out.println("----------------------------");
-            System.out.printf("PARTIDA NUMERO %d\n\n", numPartida++);
+            System.out.printf("PARTIDA NUMERO %d\n\n", numPartida);
             opcion = eleccionPrincipal();
             if (opcion==1){
-                resultado = iniciarPartida(generarNum());
+                iniciarPartida(generarNum(), stats);
+                numPartida++;
             }
             else {
-
+                mostrarEstadistica(stats);
             }
         }while(opcion != 3);
+        sc.close();
     }
 
     // Metodo para mostrar el menu y nos devuelve que opcion elige el usuario
@@ -76,10 +78,10 @@ public class PowerMind {
     }
 
     // Metodo para opcion 1. Iniciar partida
-    public static int iniciarPartida(int[] correctNum){
+    public static void iniciarPartida(int[] correctNum, int[] resultado){
         int [] secretNum = new int[4];
         int numIntentos = 1;
-        boolean numeroCompletoEncontrado = false;
+        boolean numeroCompletoEncontrado = false, haJugado = false;
 
 
         while (numIntentos <= 5) {
@@ -96,7 +98,11 @@ public class PowerMind {
                     // Condicion para sacarnos del metodo
                     if (secretNum[i] == -1) {
                         // -1 indica partida abandonada, nos saca del metodo directamente
-                        return -1;
+                        resultado[4] += 1;
+                        if (haJugado) {
+                            resultado[2] += numIntentos-1;
+                        }
+                        return;
                     }
                     if (secretNum[i] < 0 || secretNum[i] > 9) {
                         System.out.println("Número inválido. Solo se acepta número entre 0 y 9.");
@@ -106,19 +112,22 @@ public class PowerMind {
 
             // Array de caracteres para indicar si está, no está o en otra posición
             char[] SNO = new char[4];
-            boolean encontrado = false;
+            boolean encontrado = false; //Creamos la bandera
+
+            //Hacemos un bucle for para ver que introducimos en el array de caracteres
             for (int i = 0; i < secretNum.length; i++) {
-                if (secretNum[i] == correctNum[i]) {
+                if (secretNum[i] == correctNum[i]) { //Si el número introducido es correcto en el array a adivinar el de caracteres toma 'S'
                     SNO[i] = 'S';
                 } else if (secretNum[i] != correctNum[i]) {
                     //Comprobamos si el numero se encuentra en alguna posicion del bucle correcto
                     for (int ii = 0; ii < secretNum.length; ii++) {
                         encontrado = false;
-                        if (secretNum[i] == correctNum[ii]) {
+                        if (secretNum[i] == correctNum[ii]) { //Si lo encuentra decimos que lo ha encontrado para poner una 'O'
                             encontrado = true;
                             break;
                         }
                     }
+                    //Condicional en el caso de que esté o no esté
                     if (encontrado) {
                         SNO[i] = 'O';
                     } else {
@@ -126,6 +135,9 @@ public class PowerMind {
                     }
                 }
             }
+
+            //Si hace un intento
+            haJugado = true;
 
             //Salida de datos
             System.out.println("""
@@ -142,19 +154,38 @@ public class PowerMind {
             //Si encuentra el número, salimos del bucle y cambiamos el valor de la bandera para que en la siguiente
             //Condicion retorne el valor correspondiente
             if (Arrays.equals (secretNum, correctNum)){
-                return numIntentos;
+                switch (numIntentos){
+                    case 1, 2:
+                        resultado[0] += 3;
+                        break;
+                    case 3, 4:
+                        resultado[0] += 2;
+                        break;
+                    default:
+                        resultado[0] += 1;
+                }
+                resultado[2] += numIntentos;
+                return;
             }
             numIntentos++;
+
         }
         System.out.println("¡Has perdido! Número máximo de intentos superado.");
-
-        return ++numIntentos;
-
-
+        resultado[3] += 1;
+        return;
     }
 
     public static void mostrarEstadistica(int[] resultado){
-
+        System.out.printf("""
+        ESTADISTICAS
+        -------------------------
+        Número de puntos obtenidos: %d
+        Numero de partidas ganadas: %d
+        Número de intentos: %d
+        Número de partidas perdidas: %d
+        Número de partidas abandonadas: %d
+        """,
+                resultado[0], resultado[1], resultado[2], resultado[3], resultado[4]);
     }
 }
 
