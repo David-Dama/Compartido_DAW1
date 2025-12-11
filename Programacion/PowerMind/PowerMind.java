@@ -19,12 +19,15 @@ public class PowerMind {
     }
 
     public static void main(String[] args){
+        int opcion, numPartida = 1;
         // Bucle principal
         do {
-            if (eleccionPrincipal()==1){
+            System.out.printf("PARTIDA NUMERO %d\n\n", numPartida++);
+            opcion = eleccionPrincipal();
+            if (opcion==1){
                 jugar(generarNum());
             }
-        }while(eleccionPrincipal() != 3);
+        }while(opcion != 3);
     }
 
 
@@ -32,9 +35,12 @@ public class PowerMind {
     // Metodo para mostrar el menu y nos devuelve que opcion elige el usuario
     public static int eleccionPrincipal (){
         int opcion;
-        System.out.println("1- Iniciar partida"+
-                "\n2. Ver estadísticas"+
-                "\n3. Finalizar juego");
+        System.out.print("""
+        1. Iniciar partida
+        2. Ver estadísticas
+        3. Finalizar juego
+        
+        Escoja una opcion: """);
         opcion = pedirEntero();
         // Bucle de validacion del rango de enteros
         while(opcion <1 || opcion >3){
@@ -118,11 +124,10 @@ public class PowerMind {
            O == En posición incorrecta
         """);
 
-        System.out.print(Arrays.toString(secretNum));
-        System.out.println("^  ^  ^  ^");
-        System.out.println("|  |  |  |");
+        System.out.println(Arrays.toString(secretNum));
+        System.out.println(" ↑  ↑  ↑  ↑");
         System.out.println(Arrays.toString(SNO));
-
+        System.out.println("----------------------------");
         return 1;
     }
 }
