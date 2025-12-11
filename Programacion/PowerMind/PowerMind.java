@@ -81,8 +81,6 @@ public class PowerMind {
     public static void iniciarPartida(int[] correctNum, int[] resultado){
         int [] secretNum = new int[4];
         int numIntentos = 1;
-        boolean numeroCompletoEncontrado = false, haJugado = false;
-
 
         while (numIntentos <= 5) {
             System.out.println("----------------------------");
@@ -99,9 +97,9 @@ public class PowerMind {
                     if (secretNum[i] == -1) {
                         // -1 indica partida abandonada, nos saca del metodo directamente
                         resultado[4] += 1;
-                        if (haJugado) {
-                            resultado[2] += numIntentos-1;
-                        }
+                        // -1 intentos porque ha abandonado el intento actual, entonces este intento no cuenta
+                        resultado[2] += numIntentos-1;
+                        // salimos del metodo
                         return;
                     }
                     if (secretNum[i] < 0 || secretNum[i] > 9) {
@@ -110,34 +108,7 @@ public class PowerMind {
                 } while (secretNum[i] < 0 || secretNum[i] > 9);
             }
 
-            // Array de caracteres para indicar si está, no está o en otra posición
-            char[] SNO = new char[4];
-            boolean encontrado = false; //Creamos la bandera
-
-            //Hacemos un bucle for para ver que introducimos en el array de caracteres
-            for (int i = 0; i < secretNum.length; i++) {
-                if (secretNum[i] == correctNum[i]) { //Si el número introducido es correcto en el array a adivinar el de caracteres toma 'S'
-                    SNO[i] = 'S';
-                } else if (secretNum[i] != correctNum[i]) {
-                    //Comprobamos si el numero se encuentra en alguna posicion del bucle correcto
-                    for (int ii = 0; ii < secretNum.length; ii++) {
-                        encontrado = false;
-                        if (secretNum[i] == correctNum[ii]) { //Si lo encuentra decimos que lo ha encontrado para poner una 'O'
-                            encontrado = true;
-                            break;
-                        }
-                    }
-                    //Condicional en el caso de que esté o no esté
-                    if (encontrado) {
-                        SNO[i] = 'O';
-                    } else {
-                        SNO[i] = 'N';
-                    }
-                }
-            }
-
-            //Si hace un intento
-            haJugado = true;
+            char [] SNO = comprobar(secretNum,correctNum);
 
             //Salida de datos
             System.out.println("""
@@ -157,12 +128,15 @@ public class PowerMind {
                 switch (numIntentos){
                     case 1, 2:
                         resultado[0] += 3;
+                        resultado[1] += 1;
                         break;
                     case 3, 4:
                         resultado[0] += 2;
+                        resultado[1] += 1;
                         break;
                     default:
                         resultado[0] += 1;
+                        resultado[1] += 1;
                 }
                 resultado[2] += numIntentos;
                 return;
@@ -173,7 +147,35 @@ public class PowerMind {
         System.out.println("¡Has perdido! Número máximo de intentos superado.");
         resultado[3] += 1;
         resultado[2] += 5;
-        return;
+    }
+
+    public static char[] comprobar (int[] secretNum, int[] correctNum){
+        // Array de caracteres para indicar si está, no está o en otra posición
+        char[] SNO = new char[4];
+        boolean encontrado = false; //Creamos la bandera
+
+        //Hacemos un bucle for para ver que introducimos en el array de caracteres
+        for (int i = 0; i < secretNum.length; i++) {
+            if (secretNum[i] == correctNum[i]) { //Si el número introducido es correcto en el array a adivinar el de caracteres toma 'S'
+                SNO[i] = 'S';
+            } else if (secretNum[i] != correctNum[i]) {
+                //Comprobamos si el numero se encuentra en alguna posicion del bucle correcto
+                for (int ii = 0; ii < secretNum.length; ii++) {
+                    encontrado = false;
+                    if (secretNum[i] == correctNum[ii]) { //Si lo encuentra decimos que lo ha encontrado para poner una 'O'
+                        encontrado = true;
+                        break;
+                    }
+                }
+                //Condicional en el caso de que esté o no esté
+                if (encontrado) {
+                    SNO[i] = 'O';
+                } else {
+                    SNO[i] = 'N';
+                }
+            }
+        }
+        return SNO;
     }
 
     public static void mostrarEstadistica(int[] resultado){
