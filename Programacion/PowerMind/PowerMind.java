@@ -19,21 +19,25 @@ public class PowerMind {
     }
 
     public static void main(String[] args){
-        int opcion, numPartida = 1;
+        int opcion, numPartida = 1, resultado;
+        int[] stats = new int[5];
+
         // Bucle principal
         do {
+            System.out.println("----------------------------");
             System.out.printf("PARTIDA NUMERO %d\n\n", numPartida++);
             opcion = eleccionPrincipal();
             if (opcion==1){
-                jugar(generarNum());
+                resultado = iniciarPartida(generarNum());
+            }
+            else {
+
             }
         }while(opcion != 3);
     }
 
-
-
     // Metodo para mostrar el menu y nos devuelve que opcion elige el usuario
-    public static int eleccionPrincipal (){
+    public static int eleccionPrincipal(){
         int opcion;
         System.out.print("""
         1. Iniciar partida
@@ -42,6 +46,7 @@ public class PowerMind {
         
         Escoja una opcion: """);
         opcion = pedirEntero();
+        System.out.println();
         // Bucle de validacion del rango de enteros
         while(opcion <1 || opcion >3){
             System.out.println("Introduce sólo un numero entre el 1-3!");
@@ -71,64 +76,85 @@ public class PowerMind {
     }
 
     // Metodo para opcion 1. Iniciar partida
-    public static int jugar (int[] correctNum){
+    public static int iniciarPartida(int[] correctNum){
         int [] secretNum = new int[4];
+        int numIntentos = 1;
+        boolean numeroCompletoEncontrado = false;
 
-        // Bucle para rellenar array
-        for (int i = 0; i < secretNum.length;i++){
-            do {
-                System.out.println("Introduce el número secreto o -1 para salir");
-                secretNum[i] = pedirEntero();
-                // Condicion para sacarnos del metodo
-                if (secretNum[i] == -1){
-                    // -1 indica partida abandonada, nos saca del metodo directamente
-                    return -1;
-                }
-                if (secretNum[i] < 0 || secretNum[i]>9){
-                    System.out.println("Número inválido. Solo se acepta número entre 0 y 9.");
-                }
-            } while (secretNum[i] <0 || secretNum[i] > 9);
-        }
 
-        //En el caso de que sea incorrecto
+        while (numIntentos <= 5) {
+            System.out.println("----------------------------");
+            System.out.printf("Intento número %d\n", numIntentos);
+            System.out.println("""
+            RECUERDA: Para salir debe escribir -1.""");
 
-        // Array de caracteres para indicar si está, no está o en otra posición
-        char[] SNO =  new char[4];
-        boolean encontrado = false;
-        for (int i = 0; i < secretNum.length; i++){
-            if (secretNum[i] == correctNum [i]){
-                SNO[i] = 'S';
+            // Bucle para rellenar array
+            for (int i = 0; i < secretNum.length; i++) {
+                do {
+                    System.out.printf("Introduce el número secreto de la posición %d: ", i);
+                    secretNum[i] = pedirEntero();
+                    // Condicion para sacarnos del metodo
+                    if (secretNum[i] == -1) {
+                        // -1 indica partida abandonada, nos saca del metodo directamente
+                        return -1;
+                    }
+                    if (secretNum[i] < 0 || secretNum[i] > 9) {
+                        System.out.println("Número inválido. Solo se acepta número entre 0 y 9.");
+                    }
+                } while (secretNum[i] < 0 || secretNum[i] > 9);
             }
-            else if (secretNum[i] != correctNum[i]){
-                //Comprobamos si el numero se encuentra en alguna posicion del bucle correcto
-                for (int ii = 0; ii < secretNum.length; ii++){
-                    encontrado = false;
-                    if (secretNum[i] == correctNum[ii]) {
-                        encontrado = true;
-                        break;
+
+            // Array de caracteres para indicar si está, no está o en otra posición
+            char[] SNO = new char[4];
+            boolean encontrado = false;
+            for (int i = 0; i < secretNum.length; i++) {
+                if (secretNum[i] == correctNum[i]) {
+                    SNO[i] = 'S';
+                } else if (secretNum[i] != correctNum[i]) {
+                    //Comprobamos si el numero se encuentra en alguna posicion del bucle correcto
+                    for (int ii = 0; ii < secretNum.length; ii++) {
+                        encontrado = false;
+                        if (secretNum[i] == correctNum[ii]) {
+                            encontrado = true;
+                            break;
+                        }
+                    }
+                    if (encontrado) {
+                        SNO[i] = 'O';
+                    } else {
+                        SNO[i] = 'N';
                     }
                 }
-                if (encontrado){
-                    SNO[i] = 'O';
-                } else {
-                    SNO[i] = 'N';
-                }
             }
+
+            //Salida de datos
+            System.out.println("""
+                       Recuerda:
+                       S == En la posición correcta
+                       N == No está
+                       O == En posición incorrecta
+                    """);
+
+            System.out.println(Arrays.toString(secretNum));
+            System.out.println(" ↑  ↑  ↑  ↑");
+            System.out.println(Arrays.toString(SNO));
+
+            //Si encuentra el número, salimos del bucle y cambiamos el valor de la bandera para que en la siguiente
+            //Condicion retorne el valor correspondiente
+            if (Arrays.equals (secretNum, correctNum)){
+                return numIntentos;
+            }
+            numIntentos++;
         }
+        System.out.println("¡Has perdido! Número máximo de intentos superado.");
 
-        //Salida de datos
-        System.out.println("""
-           Recuerda:
-           S == En la posición correcta
-           N == No está
-           O == En posición incorrecta
-        """);
+        return ++numIntentos;
 
-        System.out.println(Arrays.toString(secretNum));
-        System.out.println(" ↑  ↑  ↑  ↑");
-        System.out.println(Arrays.toString(SNO));
-        System.out.println("----------------------------");
-        return 1;
+
+    }
+
+    public static void mostrarEstadistica(int[] resultado){
+
     }
 }
 
