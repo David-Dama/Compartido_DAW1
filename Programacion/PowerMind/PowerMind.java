@@ -190,6 +190,7 @@ public class PowerMind {
         return sne;
     }
 
+    // Metodo para mostrar el mensage de estado
     public static void mostrarEstado(int[] numIntroducido, char [] sne) {
         System.out.println("""
                        
@@ -198,7 +199,6 @@ public class PowerMind {
                        N == No está
                        O == En posición incorrecta
                     """);
-
         System.out.println(Arrays.toString(numIntroducido));
         System.out.println(" ↑  ↑  ↑  ↑");
         System.out.println(Arrays.toString(sne));
