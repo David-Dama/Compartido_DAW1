@@ -5,30 +5,18 @@ import java.util.Scanner;
 
 public class PowerMind {
 
-    // Atributo scanner para poder usarlo en varios metodos
-    private static final Scanner sc = new Scanner(System.in);
-
-    // Metodo para pedir numero entero con validacion ya que vamos a pedir muchos enteros
-    public static int pedirEntero() {
-        while (!sc.hasNextInt()){
-            System.out.println("Please enter a number!");
-            // Descartamos el input invalido
-            sc.next();
-        }
-        return sc.nextInt();
-    }
-
     public static void main(String[] args){
         int opcion, numPartida = 1;
         int[] stats = new int[5];
+        Scanner sc = new Scanner(System.in);
 
         // Bucle principal
         do {
             System.out.println("----------------------------");
             System.out.printf("PARTIDA NUMERO %d\n\n", numPartida);
-            opcion = eleccionPrincipal();
+            opcion = eleccionPrincipal(sc);
             if (opcion==1){
-                iniciarPartida(generarNum(), stats);
+                iniciarPartida(generarNum(), stats, sc);
                 numPartida++;
             }
             else {
@@ -38,8 +26,18 @@ public class PowerMind {
         sc.close();
     }
 
+    // Metodo para pedir numero entero con validacion ya que vamos a pedir muchos enteros
+    public static int pedirEntero(Scanner sc) {
+        while (!sc.hasNextInt()){
+            System.out.println("Intoduzca un número");
+            // Descartamos el input invalido
+            sc.next();
+        }
+        return sc.nextInt();
+    }
+
     // Metodo para mostrar el menu y nos devuelve que opcion elige el usuario
-    public static int eleccionPrincipal(){
+    public static int eleccionPrincipal(Scanner sc){
         int opcion;
         System.out.print("""
         1. Iniciar partida
@@ -47,12 +45,12 @@ public class PowerMind {
         3. Finalizar juego
         
         Escoja una opcion: """);
-        opcion = pedirEntero();
+        opcion = pedirEntero(sc);
         System.out.println();
         // Bucle de validacion del rango de enteros
         while(opcion <1 || opcion >3){
             System.out.println("Introduce sólo un numero entre el 1-3!");
-            opcion=pedirEntero();
+            opcion=pedirEntero(sc);
         }
         return opcion;
     }
@@ -67,7 +65,7 @@ public class PowerMind {
             int num;
             do {
                 // Genera randoms del 0 al 9
-                num = (int) ((Math.random() * (9 + 1)));
+                num = (int) ((Math.random() * 10));
             } while (usado[num]);
             array[i] = num;
             // Cambiamos a true la posicion que tiene a num como indice
@@ -78,21 +76,20 @@ public class PowerMind {
     }
 
     // Metodo para opcion 1. Iniciar partida
-    public static void iniciarPartida(int[] correctNum, int[] resultado){
+    public static void iniciarPartida(int[] correctNum, int[] resultado, Scanner sc){
         int [] secretNum = new int[4];
         int numIntentos = 1;
 
         while (numIntentos <= 5) {
             System.out.println("----------------------------");
             System.out.printf("Intento número %d\n", numIntentos);
-            System.out.println("""
-            RECUERDA: Para salir debe escribir -1.""");
+            System.out.println("\nRECUERDA: Para salir debe escribir -1.");
 
             // Bucle para rellenar array
             for (int i = 0; i < secretNum.length; i++) {
                 do {
                     System.out.printf("Introduce el número secreto de la posición %d: ", i);
-                    secretNum[i] = pedirEntero();
+                    secretNum[i] = pedirEntero(sc);
                     // Condicion para sacarnos del metodo
                     if (secretNum[i] == -1) {
                         // -1 indica partida abandonada, nos saca del metodo directamente
@@ -139,6 +136,7 @@ public class PowerMind {
                         resultado[1] += 1;
                 }
                 resultado[2] += numIntentos;
+                System.out.println("¡Has ganado!\n");
                 return;
             }
             numIntentos++;
@@ -151,13 +149,13 @@ public class PowerMind {
 
     public static char[] comprobar (int[] secretNum, int[] correctNum){
         // Array de caracteres para indicar si está, no está o en otra posición
-        char[] SNO = new char[4];
+        char[] sno = new char[4];
         boolean encontrado = false; //Creamos la bandera
 
         //Hacemos un bucle for para ver que introducimos en el array de caracteres
         for (int i = 0; i < secretNum.length; i++) {
             if (secretNum[i] == correctNum[i]) { //Si el número introducido es correcto en el array a adivinar el de caracteres toma 'S'
-                SNO[i] = 'S';
+                sno[i] = 'S';
             } else if (secretNum[i] != correctNum[i]) {
                 //Comprobamos si el numero se encuentra en alguna posicion del bucle correcto
                 for (int ii = 0; ii < secretNum.length; ii++) {
@@ -169,13 +167,13 @@ public class PowerMind {
                 }
                 //Condicional en el caso de que esté o no esté
                 if (encontrado) {
-                    SNO[i] = 'O';
+                    sno[i] = 'O';
                 } else {
-                    SNO[i] = 'N';
+                    sno[i] = 'N';
                 }
             }
         }
-        return SNO;
+        return sno;
     }
 
     public static void mostrarEstadistica(int[] resultado){
