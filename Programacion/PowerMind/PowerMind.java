@@ -18,7 +18,6 @@ public class PowerMind {
         int opcion, numPartida = 1;
         // Creamos un scanner
         Scanner sc = new Scanner(System.in);
-
         // Bucle principal del programa
         do {
             opcion = eleccionPrincipal(sc);
@@ -48,6 +47,8 @@ public class PowerMind {
     public static int eleccionPrincipal(Scanner sc) {
         int opcion;
         System.out.print("""
+                MENU
+                --------------------------------------------
                 1. Iniciar partida
                 2. Ver estadísticas
                 3. Finalizar juego
@@ -68,14 +69,14 @@ public class PowerMind {
         // Array que el usuario va a rellenar
         int[] numIntroducido = new int[4];
         // Array de pista que indicará si los numeros están en la posición correcta o no
-        char[] sne = new char[4];
+        char[] sne;
         int numIntentos = 1;
 
-        System.out.println("----------------------------");
+        System.out.println("--------------------------------------------");
         System.out.printf("PARTIDA NUMERO %d\n\n", numPartida);
 
         while (numIntentos <= 5) {
-            System.out.println("----------------------------");
+            System.out.println("--------------------------------------------");
             System.out.printf("Intento número %d\n", numIntentos);
             System.out.println("\nRECUERDA: Para salir debe escribir -1.");
 
@@ -125,43 +126,17 @@ public class PowerMind {
                 stats[1] += numIntentos;
                 // +1 Partida ganada
                 stats[2] += 1;
-                System.out.println("""
-                        ----------------------------
-                            (  )   (   )  )
-                             ) (   )  (  (
-                             ( )  (    ) )
-                             _____________
-                            <_____________> _____
-                            |               |/ _ \\
-                            |      GG       | | | |
-                            |               |_| | |
-                         ___|             |\\___/ /
-                        /    \\___________/    \\
-                        ----------------------------
-                        ¡Ganaste!
-                        """);
-
+                mostrarGanarPerder(true);
+                // Salimos del metodo
                 return;
             }
             numIntentos++;
-
         }
-        System.out.println("""
-                ----------------------------
-                        (  .   .  )
-                      (      _      )
-                     (               )
-                     (      zzz      )
-                      (             )
-                        (         )
-                ----------------------------
-                Perdiste... ¡Más suerte a la próxima!
-                """);
-
         // Suma intentos
         stats[1] += 5;
         // +1 Partida perdida
         stats[3] += 1;
+        mostrarGanarPerder(false);
     }
 
     // Metodo para generar el numero correcto
@@ -190,7 +165,6 @@ public class PowerMind {
     public static char[] comprobar(int[] numIntroducido, int[] numCorrecto) {
         // Array de caracteres para indicar si está, no está o en otra posición
         char[] sne = new char[4];
-
         // Bucle for para ver que introducimos en el array de caracteres
         for (int i = 0; i < numIntroducido.length; i++) {
             // Condición de posición correcta
@@ -229,17 +203,51 @@ public class PowerMind {
         System.out.println(Arrays.toString(sne));
     }
 
+    public static void mostrarGanarPerder(boolean ganar) {
+        if (ganar){
+            System.out.println("""
+                        --------------------------------------------
+                            (  )   (   )  )
+                             ) (   )  (  (
+                             ( )  (    ) )
+                             _____________
+                            <_____________> _____
+                            |               |/ _ \\
+                            |      GG       | | | |
+                            |               |_| | |
+                         ___|             |\\___/ /
+                        /    \\___________/    \\
+                        --------------------------------------------
+                        ¡Ganaste! ¿Podrás hacerlo en menos intentos?
+                        --------------------------------------------
+                        """);
+        } else {
+            System.out.println("""
+                --------------------------------------------
+                        (  .   .  )
+                      (      _      )
+                     (               )
+                     (      zzz      )
+                      (             )
+                        (         )
+                --------------------------------------------
+                Perdiste... ¡Más suerte a la próxima!
+                --------------------------------------------
+                """);
+        }
+    }
+
     // Metodo que muestra las STATS
     public static void mostrarEstadistica(int[] resultado) {
         System.out.printf("""
                 ESTADISTICAS
-                -------------------------
+                --------------------------------------------
                 Número de puntos obtenidos: %d
                 Número de intentos: %d
                 Numero de partidas ganadas: %d
                 Número de partidas perdidas: %d
                 Número de partidas abandonadas: %d
-                -------------------------
+                --------------------------------------------
                 
                 """, resultado[0], resultado[1], resultado[2], resultado[3], resultado[4]);
     }
