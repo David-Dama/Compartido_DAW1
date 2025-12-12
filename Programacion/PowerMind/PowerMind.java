@@ -203,6 +203,7 @@ public class PowerMind {
         System.out.println(Arrays.toString(sne));
     }
 
+    // Metodo para mostrar victoria o derrota
     public static void mostrarGanarPerder(boolean ganar) {
         if (ganar){
             System.out.println("""
