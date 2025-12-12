@@ -196,7 +196,7 @@ public class PowerMind {
                 Recuerda:
                    S == En la posición correcta
                    N == No está
-                   O == En posición incorrecta
+                   E == En posición incorrecta
                 """);
         System.out.println(Arrays.toString(numIntroducido));
         System.out.println(" ↑  ↑  ↑  ↑");
