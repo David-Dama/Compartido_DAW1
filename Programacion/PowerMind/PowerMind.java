@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class PowerMind {
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         /* Array para guardar las estadisticas:
         stats[0]=puntos obtenidos
         stats[1]=intentos
@@ -22,14 +22,13 @@ public class PowerMind {
         // Bucle principal del programa
         do {
             opcion = eleccionPrincipal(sc);
-            if (opcion==1){
+            if (opcion == 1) {
                 iniciarPartida(generarNum(4), stats, sc, numPartida);
                 numPartida++;
-            }
-            else {
+            } else {
                 mostrarEstadistica(stats);
             }
-        }while(opcion != 3);
+        } while (opcion != 3);
 
         // Cierre del scanner una vez finalizado el programa
         sc.close();
@@ -37,7 +36,7 @@ public class PowerMind {
 
     // Metodo para pedir numero entero con validacion ya que vamos a pedir muchos enteros
     public static int pedirEntero(Scanner sc) {
-        while (!sc.hasNextInt()){
+        while (!sc.hasNextInt()) {
             System.err.print("Introduzca solo números enteros: ");
             // Descartamos el input invalido
             sc.next();
@@ -46,30 +45,30 @@ public class PowerMind {
     }
 
     // Metodo para mostrar el menu y nos devuelve que opcion elige el usuario
-    public static int eleccionPrincipal(Scanner sc){
+    public static int eleccionPrincipal(Scanner sc) {
         int opcion;
         System.out.print("""
-        1. Iniciar partida
-        2. Ver estadísticas
-        3. Finalizar juego
-        
-        Escoja una opcion: """);
+                1. Iniciar partida
+                2. Ver estadísticas
+                3. Finalizar juego
+                
+                Escoja una opcion: """);
         opcion = pedirEntero(sc);
         System.out.println();
         // Bucle de validacion del rango de enteros
-        while(opcion <1 || opcion >3){
+        while (opcion < 1 || opcion > 3) {
             System.err.print("Introduce sólo un numero entre el 1-3: ");
-            opcion=pedirEntero(sc);
+            opcion = pedirEntero(sc);
         }
         return opcion;
     }
 
     // Metodo para opcion 1. Iniciar partida
-    public static void iniciarPartida(int[] numCorrecto, int[] stats, Scanner sc, int numPartida){
+    public static void iniciarPartida(int[] numCorrecto, int[] stats, Scanner sc, int numPartida) {
         // Array que el usuario va a rellenar
-        int [] numIntroducido = new int[4];
+        int[] numIntroducido = new int[4];
         // Array de pista que indicará si los numeros están en la posición correcta o no
-        char [] sne = new char[4];
+        char[] sne = new char[4];
         int numIntentos = 1;
 
         System.out.println("----------------------------");
@@ -90,7 +89,7 @@ public class PowerMind {
                         // -1 indica partida abandonada, nos saca del metodo directamente
                         stats[4] += 1;
                         // Intentos -1 porque ha abandonado el intento actual, entonces este intento no cuenta
-                        stats[1] += numIntentos-1;
+                        stats[1] += numIntentos - 1;
                         // salimos del metodo
                         return;
                     }
@@ -102,14 +101,14 @@ public class PowerMind {
             }
 
             // Llamada al metodo comprobar para que rellene el array de pistas
-            sne = comprobar(numIntroducido,numCorrecto);
+            sne = comprobar(numIntroducido, numCorrecto);
 
             mostrarEstado(numIntroducido, sne);
 
             // Condicion de que el jugador ha adivinado(ganado)
-            if (Arrays.equals (numIntroducido, numCorrecto)){
+            if (Arrays.equals(numIntroducido, numCorrecto)) {
                 // Cambiamos las estadisticas dependiendo del número de intentos
-                switch (numIntentos){
+                switch (numIntentos) {
                     case 1, 2:
                         // Suma 3 puntos
                         stats[0] += 3;
@@ -126,13 +125,39 @@ public class PowerMind {
                 stats[1] += numIntentos;
                 // +1 Partida ganada
                 stats[2] += 1;
-                System.out.println("¡Has ganado!\n");
+                System.out.println("""
+                        ----------------------------
+                            (  )   (   )  )
+                             ) (   )  (  (
+                             ( )  (    ) )
+                             _____________
+                            <_____________> _____
+                            |               |/ _ \\
+                            |      GG       | | | |
+                            |               |_| | |
+                         ___|             |\\___/ /
+                        /    \\___________/    \\
+                        ----------------------------
+                        ¡Ganaste!
+                        """);
+
                 return;
             }
             numIntentos++;
 
         }
-        System.out.println("¡Has perdido! Número máximo de intentos superado.");
+        System.out.println("""
+                ----------------------------
+                        (  .   .  )
+                      (      _      )
+                     (               )
+                     (      zzz      )
+                      (             )
+                        (         )
+                ----------------------------
+                Perdiste... ¡Más suerte a la próxima!
+                """);
+
         // Suma intentos
         stats[1] += 5;
         // +1 Partida perdida
@@ -140,13 +165,13 @@ public class PowerMind {
     }
 
     // Metodo para generar el numero correcto
-    public static int[] generarNum (int longitud){
+    public static int[] generarNum(int longitud) {
         // Array que vamos a generar
-        int [] numCorrecto = new int[longitud];
+        int[] numCorrecto = new int[longitud];
         // Array de booleanos para guardar del 0-9, que se auto rellena con false
-        boolean [] usado = new boolean[10];
+        boolean[] usado = new boolean[10];
         // Bucle rellena array
-        for (int i = 0; i < numCorrecto.length; i++){
+        for (int i = 0; i < numCorrecto.length; i++) {
             // Auxiliar
             int num;
             do {
@@ -162,7 +187,7 @@ public class PowerMind {
     }
 
     // Metodo para comprobar el array introducido con el correcto
-    public static char[] comprobar (int[] numIntroducido, int[] numCorrecto){
+    public static char[] comprobar(int[] numIntroducido, int[] numCorrecto) {
         // Array de caracteres para indicar si está, no está o en otra posición
         char[] sne = new char[4];
 
@@ -191,32 +216,32 @@ public class PowerMind {
     }
 
     // Metodo para mostrar el mensage de estado
-    public static void mostrarEstado(int[] numIntroducido, char [] sne) {
+    public static void mostrarEstado(int[] numIntroducido, char[] sne) {
         System.out.println("""
-                       
-                    Recuerda:
-                       S == En la posición correcta
-                       N == No está
-                       O == En posición incorrecta
-                    """);
+                
+                Recuerda:
+                   S == En la posición correcta
+                   N == No está
+                   O == En posición incorrecta
+                """);
         System.out.println(Arrays.toString(numIntroducido));
         System.out.println(" ↑  ↑  ↑  ↑");
         System.out.println(Arrays.toString(sne));
     }
 
     // Metodo que muestra las STATS
-    public static void mostrarEstadistica(int[] resultado){
+    public static void mostrarEstadistica(int[] resultado) {
         System.out.printf("""
-        ESTADISTICAS
-        -------------------------
-        Número de puntos obtenidos: %d
-        Número de intentos: %d
-        Numero de partidas ganadas: %d
-        Número de partidas perdidas: %d
-        Número de partidas abandonadas: %d
-        -------------------------
-        
-        """, resultado[0], resultado[1], resultado[2], resultado[3], resultado[4]);
+                ESTADISTICAS
+                -------------------------
+                Número de puntos obtenidos: %d
+                Número de intentos: %d
+                Numero de partidas ganadas: %d
+                Número de partidas perdidas: %d
+                Número de partidas abandonadas: %d
+                -------------------------
+                
+                """, resultado[0], resultado[1], resultado[2], resultado[3], resultado[4]);
     }
 }
 
